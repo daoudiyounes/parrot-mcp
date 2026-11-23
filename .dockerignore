@@ -1,0 +1,10 @@
+.venv
+.venv314
+dist
+build
+*.egg-info
+__pycache__
+.pytest_cache
+.git
+tests
+.env

@@ -1,0 +1,28 @@
+# Parrot MCP - docker compose deployment (server + tooling in one container).
+#
+#   cp .env.example .env      # then set PARROT_MCP_AUTH_TOKEN
+#   docker compose up -d
+#   curl http://localhost:8420/health
+#
+# Connect clients to: http://<host>:8420/mcp  with header
+#   Authorization: Bearer <PARROT_MCP_AUTH_TOKEN>
+services:
+  parrot-mcp:
+    build: .
+    image: parrot-mcp:latest
+    container_name: parrot-mcp
+    restart: unless-stopped
+    ports:
+      - "8420:8420"
+    env_file:
+      - .env
+    # Raw sockets for SYN scans / macchanger inside the container
+    cap_add:
+      - NET_RAW
+      - NET_ADMIN
+    volumes:
+      # Shared workspace: drop wordlists/loot here, reachable at /work in the container
+      - parrot-work:/work
+
+volumes:
+  parrot-work:

@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "parrot": {
+      "command": "parrot-mcp",
+      "args": [
+        "--mode", "ssh",
+        "--host", "192.168.56.101",
+        "--user", "pentest",
+        "--key", "/home/you/.ssh/parrot_vm"
+      ]
+    }
+  }
+}

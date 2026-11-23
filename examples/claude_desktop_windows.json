@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "parrot": {
+      "command": "C:\\Users\\you\\parrot-mcp\\.venv\\Scripts\\parrot-mcp.exe",
+      "args": ["--mode", "docker", "--container", "parrot"]
+    }
+  }
+}

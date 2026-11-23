@@ -1,0 +1,54 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: pip install -e ".[dev]"
+      - run: pytest -q
+
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install .
+      - run: parrot-mcp --version
+
+  image:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -t parrot-mcp .
+      # presence is not enough: run every bundled tool once
+      - name: every bundled tool runs
+        run: |
+          docker run --rm --entrypoint bash parrot-mcp -c '
+            for t in nmap masscan amass sublist3r whois dnsrecon nikto whatweb \
+                     gobuster wpscan dirsearch sslyze searchsploit sqlmap msfconsole \
+                     hydra hashcat john anonsurf macchanger proxychains4 theHarvester tor; do
+              command -v "$t" >/dev/null 2>&1 || { echo "MISSING $t"; exit 1; }
+            done
+            dirsearch --version >/dev/null 2>&1 || { echo "dirsearch broken"; exit 1; }
+            anonsurf --version >/dev/null 2>&1 || { echo "anonsurf broken"; exit 1; }
+          '
+      - name: server answers /health
+        run: |
+          docker run -d --name pmcp -p 8420:8420 -e PARROT_MCP_AUTH_TOKEN=ci parrot-mcp
+          for i in $(seq 1 30); do curl -sf http://127.0.0.1:8420/health && break; sleep 1; done
+          curl -sf http://127.0.0.1:8420/health | grep -q '"status":"ok"'
+          docker rm -f pmcp

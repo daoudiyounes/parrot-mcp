@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "parrot": {
+      "type": "streamableHttp",
+      "url": "http://192.168.56.101:8420/mcp",
+      "headers": {
+        "Authorization": "Bearer <token>"
+      }
+    }
+  }
+}

@@ -1,0 +1,76 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "parrot-mcp"
+dynamic = ["version"]
+description = "Model Context Protocol (MCP) server that gives AI assistants full access to Parrot OS security tooling - locally, over SSH to your VM, or inside Docker containers."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+authors = [{ name = "Parrot MCP contributors" }]
+keywords = [
+    "mcp",
+    "model-context-protocol",
+    "parrot",
+    "parrot-os",
+    "pentest",
+    "penetration-testing",
+    "security",
+    "osint",
+    "llm",
+    "ai",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Information Technology",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Security",
+    "Topic :: System :: Networking",
+]
+dependencies = [
+    "fastmcp>=3,<5",
+    "paramiko>=3.4",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+    "build>=1",
+    "twine>=5",
+]
+
+[project.scripts]
+parrot-mcp = "parrot_mcp.server:main"
+
+# Add these once the repo is public:
+# [project.urls]
+# Repository = "https://github.com/daoudiyounes/parrot-mcp"
+# Issues = "https://github.com/daoudiyounes/parrot-mcp/issues"
+
+[tool.hatch.version]
+path = "parrot_mcp/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["parrot_mcp"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+ignore = ["E501"]
+
+[tool.ruff.lint.per-file-ignores]
+"parrot_mcp/server.py" = ["E402"]

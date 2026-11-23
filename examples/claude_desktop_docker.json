@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "parrot": {
+      "command": "parrot-mcp",
+      "args": ["--mode", "docker", "--container", "parrot"]
+    }
+  }
+}
